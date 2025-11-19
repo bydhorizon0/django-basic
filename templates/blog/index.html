@@ -1,0 +1,75 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block title %} 게시글 목록 {% endblock %}
+
+{% block content %}
+
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold flex-shrink-0">게시글 목록</h2>
+
+        <form action="" method="get" class="flex flex-1 justify-center gap-2">
+            {% csrf_token %}
+
+            <input type="text" name="search" id="search"
+                   value="{{ request.GET.search|default:'' }}"
+                   class="border border-gray-300 rounded-xl px-3 py-2 w-64 focus:outline-none focus:ring focus:ring-blue-300"
+                   placeholder="검색어" autocomplete="off">
+
+            <select name="search_type" id="search-type"
+                    class="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all" {% if request.GET.search_type == "all" %}selected{% endif %}>전체</option>
+                <option value="t" {% if request.GET.search_type == "t" %}selected{% endif %}>제목</option>
+                <option value="tc" {% if request.GET.search_type == "tc" %}selected{% endif %}>제목 + 내용</option>
+                <option value="a" {% if request.GET.search_type == "a" %}selected{% endif %}>작성자</option>
+            </select>
+
+            <button type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition hover:cursor-pointer">
+                검색
+            </button>
+        </form>
+
+        <a href="{% url 'blog:post_create' %}"
+           class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+            글쓰기
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for post in posts %}
+            <a href="{% url 'blog:post_show' post.id %}"
+               class="block bg-white p-6 rounded-2xl shadow hover:shadow-lg transition border border-gray-100">
+                <h3 class="text-xl font-semibold mb-2">{{ post.title }}</h3>
+                <p class="text-gray-600 line-clamp-2">{{ post.content|truncatechars:100 }}</p>
+                <div class="text-sm text-gray-400 mt-4">{{ post.created_at|date:"Y-m-d" }}</div>
+            </a>
+        {% empty %}
+            <p class="text-gray-500">등록된 게시글이 없습니다.</p>
+        {% endfor %}
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div class="mt-6 flex justify-center gap-2">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"
+               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">이전</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if num >= page_obj.number|add:-5 and num <= page_obj.number|add:5 %}
+                {% if posts.number == num %}
+                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">{{ num }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}"
+               class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">다음</a>
+        {% endif %}
+    </div>
+
+{% endblock %}

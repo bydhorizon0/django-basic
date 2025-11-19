@@ -1,0 +1,49 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% tailwind_css %}
+    <title>{% block title %} Django Tailwind Layout {% endblock %}</title>
+</head>
+<body class="bg-gray-50 text-gray-800">
+<!-- Navbar -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="{% url 'home' %}">
+            <h1 class="text-2xl font-bold">MySite</h1>
+        </a>
+        <ul class="flex gap-6 text-lg">
+            <li><a href="{% url 'home' %}" class="hover:text-blue-600">Home</a></li>
+        </ul>
+        {% if not request.user.is_authenticated %}
+            <ul class="flex gap-6 text-lg">
+                <li><a href="{% url 'login' %}" class="hover:text-blue-600">로그인</a></li>
+                <li><a href="{% url 'signup' %}" class="hover:text-blue-600">회원가입</a></li>
+            </ul>
+        {% else %}
+            <ul>
+                <li><a href="{% url 'logout' %}" class="hover:text-blue-600">로그아웃</a></li>
+            </ul>
+        {% endif %}
+    </nav>
+</header>
+
+<!-- Page Content -->
+<main class="max-w-6xl mx-auto px-4 py-16">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t py-6 mt-12">
+    <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
+        © 2025 MySite — All rights reserved.
+    </div>
+</footer>
+
+{% block script %}
+{% endblock %}
+</body>
+</html>

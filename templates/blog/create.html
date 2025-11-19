@@ -1,0 +1,50 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block title %}게시글 수정{% endblock %}
+
+{% block content %}
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow border border-gray-100">
+        <form action="{% url 'blog:post_create' %}" method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div>
+                <label for="title" class="block font-semibold mb-2">제목</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ form.title.value|default_if_none:'' }}"
+                    class="w-full border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+                {% if form.title.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Content -->
+            <div>
+                <label for="content" class="block font-semibold mb-2">내용</label>
+                <textarea
+                    id="content"
+                    name="content"
+                    rows="10"
+                    class="w-full border-gray-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >{{ form.content.value|default_if_none:'' }}</textarea>
+                {% if form.content.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.content.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 mt-8">
+                <a href="{% url 'blog:post_list' %}"
+                   class="px-5 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition">목록으로</a>
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+                    저장하기
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
