@@ -44,7 +44,7 @@ class PostListView(ListView):
                         | Q(content__icontains=search)
                         | Q(author__username__icontains=search)
                     )
-        return queryset
+        return queryset.order_by("-created_at")
 
 
 class PostDetailView(DetailView):
@@ -66,7 +66,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = PostForm(request.POST)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
             return redirect("blog:post_list")
         # 실패하면 form과 함께 다시 렌더링 -> 이전 값 유지
         return render(request, "blog/create.html", {"form": form})

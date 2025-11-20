@@ -9,7 +9,8 @@
         <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
 
         <div class="text-gray-400 text-sm mb-6">
-            작성일: {{ post.created_at|date:"Y-m-d H:i" }}
+            <span>작성자: {{ post.author.username }}</span> |
+            <span>작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
         </div>
 
         <div class="prose max-w-none">
